@@ -1,14 +1,10 @@
 // @ts-check
 
-// dotenv.config({ debug: true }); 
-// import * as dotenv from 'dotenv' // sePe https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
-console.log('hereeeee', process.env.SESSION_KEY);
-
 import { fileURLToPath } from 'url';
 import path from 'path';
+
 import fastifyStatic from 'fastify-static';
 import fastifyErrorPage from 'fastify-error-page';
-
 import pointOfView from 'point-of-view';
 import fastifyFormbody from 'fastify-formbody';
 import fastifySecureSession from 'fastify-secure-session';
@@ -32,7 +28,6 @@ import FormStrategy from './lib/passportStrategies/FormStrategy.js';
 const __dirname = fileURLToPath(path.dirname(import.meta.url));
 
 const mode = process.env.NODE_ENV || 'development';
-// console.log('before', process.env.SESSION_KEY);
 // const isDevelopment = mode === 'development';
 
 const setUpViews = (app) => {
@@ -83,9 +78,6 @@ const addHooks = (app) => {
 };
 
 const registerPlugins = (app) => {
-  // console.log('hereeeeeeeeeeeeeeeeeeeeee', process.env.SESSION_KEY);
-  // process.env.SESSION_KEY = 'aalshdalsdh8ashdlasdal8shdal8sdnalskdnals8alsdnalsdnas8ldalsd8nas';
-  // console.log('after', process.env.SESSION_KEY);
   app.register(fastifySensible);
   app.register(fastifyErrorPage);
   app.register(fastifyReverseRoutes);
@@ -123,11 +115,8 @@ const registerPlugins = (app) => {
 
 // eslint-disable-next-line no-unused-vars
 export default async (app, options) => {
-  // process.env.SESSION_KEY = '4fe91796c30bd989d95b62dc46c7c3ba0b6aa2df2187400586a4121c54c53b85';
-  
-  // console.log('hereeeee', process.cwd());
-
   registerPlugins(app);
+ 
   await setupLocalization();
   setUpViews(app);
   setUpStaticAssets(app);
