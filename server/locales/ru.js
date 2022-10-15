@@ -18,7 +18,7 @@ export default {
           error: 'Не удалось зарегистрировать',
           success: 'Пользователь успешно зарегистрирован',
         },
-      },
+      },      
       authError: 'Доступ запрещён! Пожалуйста, авторизируйтесь.',
     },
     layouts: {
@@ -38,8 +38,12 @@ export default {
       },
       users: {
         id: 'ID',
+        firstName: 'Имя',
+        lastName: 'Фамилия',
+        password: 'Пароль',
         email: 'Email',
         createdAt: 'Дата создания',
+        edit: 'Ваш профиль',
         new: {
           submit: 'Сохранить',
           signUp: 'Регистрация',
