@@ -7,6 +7,10 @@ const encrypt = require('../lib/secure.cjs');
 const unique = objectionUnique({ fields: ['email'] });
 
 module.exports = class User extends unique(BaseModel) {
+  get sId() {
+    return String(this.id)
+  }
+
   static get tableName() {
     return 'users';
   }
@@ -16,10 +20,9 @@ module.exports = class User extends unique(BaseModel) {
       type: 'object',
       required: ['email', 'password', 'firstName', 'lastName'],
       properties: {
-        // id: { type: 'string' },
-        firstName: {type: 'string', minLength: 1},
-        lastName: {type: 'string', minLength: 1},
-        email: { type: 'string', minLength: 6},
+        firstName: { type: 'string', minLength: 1 },
+        lastName: { type: 'string', minLength: 1 },
+        email: { type: 'string', minLength: 6 },
         password: { type: 'string', minLength: 3 },
       },
     };

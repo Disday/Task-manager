@@ -10,7 +10,7 @@ describe('test session', () => {
   let testData;
 
   beforeAll(async () => {
-    app = fastify({ logger: { prettyPrint: true } });
+    app = fastify({ logger: { prettyPrint: false } });
     await init(app);
     knex = app.objection.knex;
     await knex.migrate.latest();
@@ -18,7 +18,7 @@ describe('test session', () => {
     testData = getTestData();
   });
 
-  it('test sign in / sign out', async () => {
+  test('test sign in / sign out', async () => {
     const response = await app.inject({
       method: 'GET',
       url: app.reverse('newSession'),
@@ -35,21 +35,28 @@ describe('test session', () => {
     });
 
     expect(responseSignIn.statusCode).toBe(302);
-    // после успешной аутентификации получаем куки из ответа,
-    // они понадобятся для выполнения запросов на маршруты требующие
-    // предварительную аутентификацию
     const [sessionCookie] = responseSignIn.cookies;
     const { name, value } = sessionCookie;
     const cookie = { [name]: value };
-
+    
     const responseSignOut = await app.inject({
       method: 'DELETE',
       url: app.reverse('session'),
-      // используем полученные ранее куки
       cookies: cookie,
     });
-
+    
     expect(responseSignOut.statusCode).toBe(302);
+  });
+
+  test('sign in - unexistent user', async () => {
+    const responseSignIn = await app.inject({
+      method: 'POST',
+      url: app.reverse('session'),
+      payload: {
+        data: testData.users.new,
+      },
+    });
+    expect(responseSignIn.statusCode).toBe(401);
   });
 
   afterAll(async () => {

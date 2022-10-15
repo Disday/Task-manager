@@ -18,19 +18,18 @@ describe('test users CRUD', () => {
     await init(app);
     knex = app.objection.knex;
     models = app.objection.models;
-
     // TODO: пока один раз перед тестами
     // тесты не должны зависеть друг от друга
     // перед каждым тестом выполняем миграции
     // и заполняем БД тестовыми данными
+  });
+
+  beforeEach(async () => {
     await knex.migrate.latest();
     await prepareData(app);
   });
 
-  beforeEach(async () => {
-  });
-
-  it('index', async () => {
+  test('index', async () => {
     const response = await app.inject({
       method: 'GET',
       url: app.reverse('users'),
@@ -39,7 +38,7 @@ describe('test users CRUD', () => {
     expect(response.statusCode).toBe(200);
   });
 
-  it('new', async () => {
+  test('new', async () => {
     const response = await app.inject({
       method: 'GET',
       url: app.reverse('newUser'),
@@ -48,19 +47,19 @@ describe('test users CRUD', () => {
     expect(response.statusCode).toBe(200);
   });
 
-  it('create', async () => {
+  test('create', async () => {
     const params = testData.users.new;
     const response = await app.inject({
       method: 'POST',
-      url: app.reverse('users'),
+      url: 'users',
       payload: {
         data: params,
       },
     });
-
     expect(response.statusCode).toBe(302);
+    
     const expected = {
-      ..._.omit(params, 'password'),
+      ...(_.omit(params, 'password')),
       passwordDigest: encrypt(params.password),
     };
     const user = await models.user.query().findOne({ email: params.email });
@@ -70,7 +69,7 @@ describe('test users CRUD', () => {
   afterEach(async () => {
     // Пока Segmentation fault: 11
     // после каждого теста откатываем миграции
-    // await knex.migrate.rollback();
+    await knex.migrate.rollback();
   });
 
   afterAll(async () => {

@@ -1,6 +1,6 @@
 // @ts-check
 
-import i18next from 'i18next';
+import { t } from 'i18next';
 
 export default (app) => {
   app
@@ -15,17 +15,18 @@ export default (app) => {
       if (!user) {
         const signInForm = req.body.data;
         const errors = {
-          email: [{ message: i18next.t('flash.session.create.error') }],
+          email: [{ message: t('flash.session.create.error') }],
         };
+        reply.statusCode = '401';
         return reply.render('session/new', { signInForm, errors });
       }
       await req.logIn(user);
-      req.flash('success', i18next.t('flash.session.create.success'));
+      req.flash('success', t('flash.session.create.success'));
       return reply.redirect(app.reverse('root'));
     }))
     .delete('/session', (req, reply) => {
       req.logOut();
-      req.flash('info', i18next.t('flash.session.delete.success'));
+      req.flash('info', t('flash.session.delete.success'));
       reply.redirect(app.reverse('root'));
     });
 };

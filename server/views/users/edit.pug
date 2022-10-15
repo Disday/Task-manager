@@ -5,9 +5,11 @@ block header
 
 block content
  TODO 
-  +formFor()(action=`/users/${user.id}` method='patch')
+  +formFor()(action=`/users/${user.id}` method='POST')
+    //- <input type="hidden" name="_method" value="DELETE">
+    input(name="_method" type="hidden" value="patch")
     +input(user, 'firstName', errors)(type="text")
     +input(user, 'lastName', errors)(type="text")
     +input(user, 'email', errors)(type="email")
-    +input(user, 'password', errors)(type="password")
+    +input(user, 'password', errors)(type="password" value="***")
     +submit(user)(value=t('views.users.new.submit'))

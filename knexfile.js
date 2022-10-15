@@ -27,7 +27,7 @@ export const test = {
 };
 
 export const production = {
-  client: 'sqlite3',
+  client: 'pg-native',
   connection: {
     filename: './database.sqlite',
   },

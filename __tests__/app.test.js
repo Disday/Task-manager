@@ -11,11 +11,11 @@ describe('requests', () => {
   let app;
 
   beforeAll(async () => {
-    app = fastify({ logger: { prettyPrint: true } });
+    app = fastify({ logger: { prettyPrint: false } });
     await init(app);
   });
 
-  it('GET 200', async () => {
+  test('GET 200', async () => {
     const res = await app.inject({
       method: 'GET',
       url: app.reverse('root'),
