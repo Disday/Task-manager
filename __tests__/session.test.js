@@ -7,18 +7,22 @@ import { getTestData, prepareData } from './helpers/index.js';
 describe('test session', () => {
   let app;
   let knex;
-  let testData;
+  const testData = getTestData();
 
   beforeAll(async () => {
-    app = fastify({ logger: { prettyPrint: false } });
+    app = fastify({
+      // logger: { prettyPrint: false }
+    });
     await init(app);
     knex = app.objection.knex;
-    await knex.migrate.latest();
-    await prepareData(app);
-    testData = getTestData();
   });
 
-  test('test sign in / sign out', async () => {
+  beforeEach(async () => {
+    await knex.migrate.latest();
+    await prepareData(app);
+  });
+
+  test('sign in / sign out', async () => {
     const response = await app.inject({
       method: 'GET',
       url: app.reverse('newSession'),
@@ -38,13 +42,13 @@ describe('test session', () => {
     const [sessionCookie] = responseSignIn.cookies;
     const { name, value } = sessionCookie;
     const cookie = { [name]: value };
-    
+
     const responseSignOut = await app.inject({
       method: 'DELETE',
       url: app.reverse('session'),
       cookies: cookie,
     });
-    
+
     expect(responseSignOut.statusCode).toBe(302);
   });
 
@@ -59,8 +63,11 @@ describe('test session', () => {
     expect(responseSignIn.statusCode).toBe(401);
   });
 
+  afterEach(async () => {
+    await knex('*').truncate;
+  });
+
   afterAll(async () => {
-    // await knex.migrate.rollback();
     await app.close();
   });
 });

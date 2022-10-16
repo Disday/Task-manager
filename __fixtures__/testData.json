@@ -8,7 +8,9 @@
     },
     "existing": {
       "email": "lawrence.kulas87@outlook.com",
-      "password": "O6AvLIQL1cbzrre"
+      "password": "O6AvLIQL1cbzrre",
+      "firstName": "Lawrence",
+      "lastName": "Kulas"
     }
   }
 }

@@ -7,7 +7,9 @@ export default (app) => ({
   route(name, params) {
     return app.reverse(name, params);
   },
-  t(key) {''
+  t(key) {
+    '';
+
     return i18next.t(key);
   },
   _,

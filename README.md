@@ -1,7 +1,6 @@
 # fastify-nodejs-application
 
-[![Node CI](https://github.com/hexlet-boilerplates/fastify-nodejs-application/workflows/Node%20CI/badge.svg)](https://github.com/hexlet-boilerplates/fastify-nodejs-application/actions)
-
+[![Node CI](https://github.com/Disday/task-manager/actions/workflows/nodejs.yml/badge.svg)](https://github.com/Disday/task-manager/actions/workflows/nodejs.yml)
 ## Setup
 
 ```bash

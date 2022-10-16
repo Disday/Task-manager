@@ -1,9 +1,5 @@
 // @ts-check
 
-import {
-  describe, beforeAll, it, expect,
-} from '@jest/globals';
-
 import fastify from 'fastify';
 import init from '../server/plugin.js';
 
@@ -11,7 +7,9 @@ describe('requests', () => {
   let app;
 
   beforeAll(async () => {
-    app = fastify({ logger: { prettyPrint: false } });
+    app = fastify({
+      // logger: { prettyPrint: false }
+    });
     await init(app);
   });
 

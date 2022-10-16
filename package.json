@@ -9,9 +9,9 @@
    "main": "src/index.js",
    "scripts": {
       "prebuild": "rm -rf dist",
-      "test": "jest --verbose --runInBand",
+      "test": "node --inspect=9320 node_modules/.bin/jest --runInBand ",
       "build": "webpack",
-      "start": "fastify start server/plugin.js -a 0.0.0.0 -l debug -P"
+      "start": "fastify start server/plugin.js  -a 0.0.0.0 -l --debug -P"
    },
    "jest": {
       "modulePathIgnorePatterns": [
@@ -45,7 +45,6 @@
       "fastify-static": "^4.7.0",
       "i18next": "^21.8.3",
       "jquery": "^3.6.0",
-      "knex": "^2.0.0",
       "lodash": "^4.17.21",
       "mini-css-extract-plugin": "^2.6.0",
       "npm-check-updates": "^13.0.1",
@@ -70,6 +69,7 @@
       "jest": "^28.1.0",
       "jest-cli": "^28.1.0",
       "pino-pretty": "^7.6.1",
+      "simple-knex-fixtures": "^2.0.3",
       "style-loader": "^3.3.1",
       "webpack-cli": "^4.9.2"
    }
