@@ -10,24 +10,29 @@ html(lang="en")
   body.d-flex.flex-column.min-vh-100
     nav.navbar.navbar-expand-lg.navbar-dark.bg-dark.mb-3
       .container-fluid
-        a.nav-link.text-white(href=route('root'))
-          i.bi.bi-house-door.d-block.mx-auto.mb-1(style="width:max-content; scale:1.5")
-          div(style="font-size:90%; width:max-content")=t('appName')
-        a.nav-link.text-white(href=route('users'))
-          i.bi.bi-person-lines-fill.d-block.mx-auto.mb-1(style="width:max-content; scale:1.5")
-          div(style="font-size:90%; width:max-content")=t('layouts.application.users')
-          //- .container-fluid
-          ul.navbar-nav
-            if isAuthenticated()
-              li.nav-item
-                +buttonTo(route('session'), 'delete')(class="btn nav-link" value=t('layouts.application.signOut'))
-            else
-              li.nav-item
-                a.nav-link(href=route('newSession'))= t('layouts.application.signIn')
-              li.nav-item
-                a.nav-link(href=route('newUser'))= t('layouts.application.signUp')
+        .d-flex
+          a.nav-link.text-white(href=route('root'))
+            i.bi.bi-house-door.d-block.mx-auto.mb-1(style="width:max-content; scale:1.5")
+            div(style="font-size:90%; width:max-content")=t('appName')
+          a.nav-link.text-white(href=route('users'))
+            i.bi.bi-person-lines-fill.d-block.mx-auto.mb-1(style="width:max-content; scale:1.5")
+            div(style="font-size:90%; width:max-content")=t('layouts.application.users')
+          if isAuthenticated()  
+            a.nav-link.text-white(href=route('statuses'))
+              i.bi.bi-list-check.d-block.mx-auto.mb-1(style="width:max-content; scale:1.5")
+              div(style="font-size:90%; width:max-content")=t('layouts.application.statuses')
+        
+        ul.navbar-nav
+          if isAuthenticated()
+            li.nav-item
+              +buttonTo(route('session'), 'delete')(class="btn nav-link" value=t('layouts.application.signOut'))
+          else
+            li.nav-item
+              a.nav-link(href=route('newSession'))= t('layouts.application.signIn')
+            li.nav-item
+              a.nav-link(href=route('newUser'))= t('layouts.application.signUp')
+    
     .container.wrapper.flex-grow-1
-
       each messages, type in reply.flash() || []
         each message in messages
           div.alert(class=`alert-${getAlertClass(type)}`)= message
@@ -38,4 +43,5 @@ html(lang="en")
 
     footer
       .container.my-5.pt-4.border-top
-        a(target="_blank" href="https://ru.hexlet.io") ?????????
+        = 'Developed by '
+        a(target="https://github.com/Disday" href="")= 'Dmitrii Temin'

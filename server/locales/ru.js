@@ -32,6 +32,7 @@ export default {
     layouts: {
       application: {
         users: 'Пользователи',
+        statuses: 'Статусы',
         signIn: 'Вход',
         signUp: 'Регистрация',
         signOut: 'Выход',
@@ -58,6 +59,15 @@ export default {
           signUp: 'Регистрация',
         },
       },
+      statuses: {
+        id: 'ID',
+        name: 'Название',
+        createdAt: 'Дата создания',
+        new: {
+          create: 'Создание статуса',
+          save: 'Сохранить',
+        }
+      },
       welcome: {
         index: {
           hello: 'Менеждер задач',
@@ -66,6 +76,7 @@ export default {
         },
       },
       actions: {
+        create: 'Создать',
         delete: 'Удалить',
         edit: 'Редактировать',
       },

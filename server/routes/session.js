@@ -1,8 +1,10 @@
 // @ts-check
 
-import { t } from 'i18next';
+import getUtils from '../../utilities/index.js';
 
 export default (app) => {
+  const { route, t } = getUtils(app);
+  
   app
     .get('/session/new', { name: 'newSession' }, (req, reply) => {
       const signInForm = {};
@@ -22,11 +24,11 @@ export default (app) => {
       }
       await req.logIn(user);
       req.flash('success', t('flash.session.create.success'));
-      return reply.redirect(app.reverse('root'));
+      return reply.redirect(route('root'));
     }))
     .delete('/session', (req, reply) => {
       req.logOut();
       req.flash('info', t('flash.session.delete.success'));
-      reply.redirect(app.reverse('root'));
+      reply.redirect(route('root'));
     });
 };

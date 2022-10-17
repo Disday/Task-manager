@@ -20,7 +20,7 @@ import ru from './locales/ru.js';
 // @ts-ignore
 
 import addRoutes from './routes/index.js';
-import getHelpers from './helpers/index.js';
+import getUtils from '../utilities/index.js';
 import * as knexConfig from '../knexfile.js';
 import models from './models/index.js';
 import FormStrategy from './lib/passportStrategies/FormStrategy.js';
@@ -31,14 +31,14 @@ const mode = process.env.NODE_ENV || 'development';
 // const isDevelopment = mode === 'development';
 
 const setUpViews = (app) => {
-  const helpers = getHelpers(app);
+  const utils = getUtils(app);
   app.register(pointOfView, {
     engine: {
       pug: Pug,
     },
     includeViewExtension: true,
     defaultContext: {
-      ...helpers,
+      ...utils,
       assetPath: (filename) => `/assets/${filename}`,
     },
     templates: path.join(__dirname, '..', 'server', 'views'),

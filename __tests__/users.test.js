@@ -1,11 +1,11 @@
 // @ts-check
 
-import _ from 'lodash';
 import fastify from 'fastify';
-
+import  omit  from 'lodash/omit.js';
 import init from '../server/plugin.js';
 import encrypt from '../server/lib/secure.cjs';
 import { getTestData, prepareData, signIn } from './helpers/index.js';
+
 
 describe('test users CRUD', () => {
   let app;
@@ -40,7 +40,6 @@ describe('test users CRUD', () => {
       method: 'GET',
       url: app.reverse('newUser'),
     });
-
     expect(response.statusCode).toBe(200);
   });
 
@@ -56,7 +55,7 @@ describe('test users CRUD', () => {
     expect(response.statusCode).toBe(302);
 
     const expected = {
-      ...(_.omit(params, 'password')),
+      ...(omit(params, 'password')),
       passwordDigest: encrypt(params.password),
     };
     const user = await models.user.query().findOne({ email: params.email });
