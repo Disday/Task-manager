@@ -5,27 +5,27 @@ import _omit from 'lodash/omit.js';
 
 export default (app) => {
   const getModel = (modelName) => app.objection.models[modelName];
-  // const getQuery = (modelName) => getModel(modelName).query();
   const isAuthorized = (req) => req.isAuthenticated() && Number(req.params.id) === req.user.id;
 
-  app.get('/users', { name: 'users' }, async (req, reply) => {
-    const users = await getModel('user').query();
-    reply.render('users/index', { users });
-    return reply;
-  });
-  app.get('/users/new', { name: 'newUser' }, (req, reply) => {
-    const user = new app.objection.models.user();
-    reply.render('users/new', { user });
-  });
-  app.get('/users/:id/edit', { name: 'editUser' }, (req, reply) => {
-    const { user } = req;
-    if (!isAuthorized(req)) {
-      req.flash('error', t('flash.authError'));
-      reply.redirect(app.reverse('root'));
-    }
-    reply.render('users/edit', { user });
-    return reply;
-  })
+  app
+    .get('/users', { name: 'users' }, async (req, reply) => {
+      const users = await getModel('user').query();
+      reply.render('users/index', { users });
+      return reply;
+    })
+    .get('/users/new', { name: 'newUser' }, (req, reply) => {
+      const user = new app.objection.models.user();
+      reply.render('users/new', { user });
+    })
+    .get('/users/:id/edit', { name: 'editUser' }, (req, reply) => {
+      const { user } = req;
+      if (!isAuthorized(req)) {
+        req.flash('error', t('flash.authError'));
+        reply.redirect(app.reverse('root'));
+      }
+      reply.render('users/edit', { user });
+      return reply;
+    })
     .post('/users', async (req, reply) => {
       const user = new app.objection.models.user();
       const { data } = req.body;
@@ -34,7 +34,7 @@ export default (app) => {
         const validUser = await app.objection.models.user.fromJson(data);
         await app.objection.models.user.query().insert(validUser);
         req.flash('info', t('flash.users.create.success'));
-        reply.redirect(201, app.reverse('newSession'));
+        reply.redirect(app.reverse('newSession'));
       } catch (e) {
         req.flash('error', t('flash.users.create.error'));
         reply.render('users/new', { user, errors: e.data });
@@ -57,11 +57,13 @@ export default (app) => {
         }
         await user.$query().patch(validUser);
         req.flash('info', t('flash.users.update.success'));
-        reply.redirect(200, app.reverse('editUser', { id }));
+        reply.render('users/edit', { user });
+        // return reply;
       } catch (e) {
         req.flash('error', t('flash.users.update.error'));
         reply.render('users/edit', { user, errors: e.data });
       }
+      return reply;
     })
     .delete('/users/:id', { name: 'deleteUser' }, async (req, reply) => {
       if (!isAuthorized(req)) {
@@ -71,8 +73,9 @@ export default (app) => {
       }
       try {
         await getModel('user').query().findById(req.params.id).delete();
+        req.logOut();
         req.flash('info', t('flash.users.delete.success'));
-        reply.redirect(204, app.reverse('root'));
+        reply.redirect(app.reverse('root'));
       } catch (e) {
         req.flash('error', t('flash.users.delete.error'));
         reply.redirect(app.reverse('users'));

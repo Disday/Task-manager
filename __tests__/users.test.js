@@ -53,7 +53,7 @@ describe('test users CRUD', () => {
         data: params,
       },
     });
-    expect(response.statusCode).toBe(201);
+    expect(response.statusCode).toBe(302);
 
     const expected = {
       ...(_.omit(params, 'password')),
@@ -83,8 +83,14 @@ describe('test users CRUD', () => {
 
   test('patch', async () => {
     const userParams = testData.users.existing;
-    const cookie = await signIn(app, userParams);
     const { id } = await models.user.query().findOne({ email: userParams.email });
+    const nonAuthorized = await app.inject({
+      method: 'PATCH',
+      url: app.reverse('patchUser', { id }),
+    });
+    expect(nonAuthorized.statusCode).toBe(302);
+
+    const cookie = await signIn(app, userParams);
     const data = { ...testData.users.existing, firstName: 'Vasya' };
     const authorized = await app.inject({
       method: 'PATCH',
@@ -98,30 +104,29 @@ describe('test users CRUD', () => {
 
     const { firstName } = await models.user.query().findOne({ email: userParams.email });
     expect(firstName).toEqual(data.firstName);
-
-    const nonAuthorized = await app.inject({
-      method: 'PATCH',
-      url: app.reverse('patchUser', { id }),
-    });
-    expect(nonAuthorized.statusCode).toBe(302);
   });
 
   test('delete', async () => {
     const userParams = testData.users.existing;
-    const cookie = await signIn(app, userParams);
     const { id } = await models.user.query().findOne({ email: userParams.email });
+    const nonAuthorized = await app.inject({
+      method: 'DELETE',
+      url: app.reverse('deleteUser', { id }),
+    });
+    expect(nonAuthorized.statusCode).toBe(302);
+    const user = await models.user.query().findOne({ email: userParams.email });
+    expect(user).toBeDefined();
+
+    const cookie = await signIn(app, userParams);
     const authorized = await app.inject({
       method: 'DELETE',
       url: app.reverse('deleteUser', { id }),
       cookies: cookie,
     });
-    expect(authorized.statusCode).toBe(204);
+    expect(authorized.statusCode).toBe(302);
 
-    const nonAuthorized = await app.inject({
-      method: 'DELETE',
-      url: app.reverse('deleteUser', { id }),
-    });
-    expect(nonAuthorized.statusCode).toBe(302);
+    const deletedUser = await models.user.query().findOne({ email: userParams.email });
+    expect(deletedUser).toBeUndefined();
   });
 
   afterEach(async () => {

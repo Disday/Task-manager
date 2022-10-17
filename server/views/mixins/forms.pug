@@ -1,9 +1,10 @@
-i- const getInputName = (property) => `data[${property}]`
+- const getInputName = (property) => `data[${property}]`
 - const getInputId = (property) => `data_${property}`
 
 mixin formFor(entity = null)
-  form&attributes(attributes)
-    block
+  div.col-12.col-lg-4.mx-auto  
+    form&attributes(attributes)
+      block
 
 mixin input(entity, propertyName, errors = {})
   - propertyErrors = _.get(errors, propertyName)
