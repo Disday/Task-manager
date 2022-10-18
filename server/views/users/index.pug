@@ -19,6 +19,6 @@ block content
           td= formatDate(user.createdAt)
           td
             div.d-flex.flex-wrap
-              a.btn.btn-success.me-1(href=route('editUser', {id: user.sId}))= t('views.actions.edit') 
-              +buttonTo(route('deleteUser', {id: user.sId}),
+              a.btn.btn-success.me-1(href=route('user', {id: user.sId}))= t('views.actions.edit') 
+              +buttonTo(route('user', {id: user.sId}),
               'delete')(value=t('views.actions.delete') class="btn btn-danger me-1")

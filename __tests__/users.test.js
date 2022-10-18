@@ -1,16 +1,14 @@
 // @ts-check
 
 import fastify from 'fastify';
-import  omit  from 'lodash/omit.js';
+import omit from 'lodash/omit.js';
 import init from '../server/plugin.js';
 import encrypt from '../server/lib/secure.cjs';
 import { getTestData, prepareData, signIn } from './helpers/index.js';
-
+// import getUtils from '../utilities/index.js';
 
 describe('test users CRUD', () => {
-  let app;
-  let knex;
-  let models;
+  let app, knex, route, findUserByEmail;
   const testData = getTestData();
 
   beforeAll(async () => {
@@ -18,8 +16,9 @@ describe('test users CRUD', () => {
       // logger: { prettyPrint: false }
     });
     await init(app);
+    findUserByEmail = (email) => app.objection.models.user.query().findOne({ email });
+    route = app.reverse;
     knex = app.objection.knex;
-    models = app.objection.models;
   });
 
   beforeEach(async () => {
@@ -30,7 +29,7 @@ describe('test users CRUD', () => {
   test('index', async () => {
     const response = await app.inject({
       method: 'GET',
-      url: app.reverse('users'),
+      url: route('users'),
     });
     expect(response.statusCode).toBe(200);
   });
@@ -38,7 +37,7 @@ describe('test users CRUD', () => {
   test('new', async () => {
     const response = await app.inject({
       method: 'GET',
-      url: app.reverse('newUser'),
+      url: route('newUser'),
     });
     expect(response.statusCode).toBe(200);
   });
@@ -58,34 +57,34 @@ describe('test users CRUD', () => {
       ...(omit(params, 'password')),
       passwordDigest: encrypt(params.password),
     };
-    const user = await models.user.query().findOne({ email: params.email });
+    const user = await findUserByEmail(params.email)
     expect(user).toMatchObject(expected);
   });
 
   test('edit', async () => {
     const userParams = testData.users.existing;
     const cookie = await signIn(app, userParams);
-    const { id } = await models.user.query().findOne({ email: userParams.email });
+    const { id } = await findUserByEmail(userParams.email);
     const authorized = await app.inject({
       method: 'GET',
-      url: app.reverse('editUser', { id }),
+      url: route('editUser', { id }),
       cookies: cookie,
     });
     expect(authorized.statusCode).toBe(200);
 
     const nonAuthorized = await app.inject({
       method: 'GET',
-      url: app.reverse('editUser', { id }),
+      url: route('editUser', { id }),
     });
     expect(nonAuthorized.statusCode).toBe(302);
   });
 
   test('patch', async () => {
     const userParams = testData.users.existing;
-    const { id } = await models.user.query().findOne({ email: userParams.email });
+    const { id } = await findUserByEmail(userParams.email);
     const nonAuthorized = await app.inject({
       method: 'PATCH',
-      url: app.reverse('patchUser', { id }),
+      url: route('user', { id }),
     });
     expect(nonAuthorized.statusCode).toBe(302);
 
@@ -93,7 +92,7 @@ describe('test users CRUD', () => {
     const data = { ...testData.users.existing, firstName: 'Vasya' };
     const authorized = await app.inject({
       method: 'PATCH',
-      url: app.reverse('patchUser', { id }),
+      url: route('user', { id }),
       cookies: cookie,
       payload: {
         data,
@@ -101,30 +100,30 @@ describe('test users CRUD', () => {
     });
     expect(authorized.statusCode).toBe(200);
 
-    const { firstName } = await models.user.query().findOne({ email: userParams.email });
+    const { firstName } = await findUserByEmail(userParams.email);
     expect(firstName).toEqual(data.firstName);
   });
 
   test('delete', async () => {
     const userParams = testData.users.existing;
-    const { id } = await models.user.query().findOne({ email: userParams.email });
+    const { id } = await findUserByEmail(userParams.email);
     const nonAuthorized = await app.inject({
       method: 'DELETE',
-      url: app.reverse('deleteUser', { id }),
+      url: route('user', { id }),
     });
     expect(nonAuthorized.statusCode).toBe(302);
-    const user = await models.user.query().findOne({ email: userParams.email });
+    const user = await findUserByEmail(userParams.email);
     expect(user).toBeDefined();
 
     const cookie = await signIn(app, userParams);
     const authorized = await app.inject({
       method: 'DELETE',
-      url: app.reverse('deleteUser', { id }),
+      url: route('user', { id }),
       cookies: cookie,
     });
     expect(authorized.statusCode).toBe(302);
 
-    const deletedUser = await models.user.query().findOne({ email: userParams.email });
+    const deletedUser = await findUserByEmail(userParams.email);
     expect(deletedUser).toBeUndefined();
   });
 

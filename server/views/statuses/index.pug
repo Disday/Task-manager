@@ -8,7 +8,7 @@ block content
 
   table.table.table-striped
     thead
-      tr
+    tr
         th= t('views.statuses.id')
         th= t('views.statuses.name')
         th= t('views.statuses.createdAt')
@@ -21,5 +21,5 @@ block content
           td
             div.d-flex.flex-wrap
               a.btn.btn-success.me-1(href=route('editStatus', {id: status.sId}))= t('views.actions.edit') 
-              +buttonTo(route('deleteStatus', {id: status.sId}),
+              +buttonTo(route('status', {id: status.sId}),
               'delete')(value=t('views.actions.delete') class="btn btn-danger me-1")

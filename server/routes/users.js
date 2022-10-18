@@ -3,15 +3,14 @@
 import getUtils from '../../utilities/index.js';
 
 export default (app) => {
-  const { route, t, _, getModel, isAuthorized } = getUtils(app);
-
+  const { route, t, _, getModel, getQueryBuilder, isAuthorized } = getUtils(app);
   app
     .get('/users', { name: 'users' }, async (req, reply) => {
-      const users = await getModel('user').query();
+      const users = await getQueryBuilder('user');
       reply.render('users/index', { users });
     })
     .get('/users/new', { name: 'newUser' }, async (req, reply) => {
-      const user = new app.objection.models.user();
+      const user = new (getModel('user'));
       reply.render('users/new', { user });
     })
     .get('/users/:id/edit', { name: 'editUser' }, (req, reply) => {
@@ -24,12 +23,12 @@ export default (app) => {
       // return reply;
     })
     .post('/users', async (req, reply) => {
-      const user = new app.objection.models.user();
+      const user = new (getModel('user'));
       const { data } = req.body;
       user.$set(data);
       try {
-        const validUser = await app.objection.models.user.fromJson(data);
-        await app.objection.models.user.query().insert(validUser);
+        const validUser = await getModel('user').fromJson(data);
+        await getModel('user').query().insert(validUser);
         req.flash('info', t('flash.users.create.success'));
         reply.redirect(route('newSession'));
       } catch (e) {
@@ -39,7 +38,7 @@ export default (app) => {
 
       return reply;
     })
-    .patch('/users/:id', { name: 'patchUser' }, async (req, reply) => {
+    .patch('/users/:id', { name: 'user' }, async (req, reply) => {
       if (!isAuthorized(req)) {
         req.flash('error', t('flash.authError'));
         reply.redirect(route('root'));
@@ -62,7 +61,7 @@ export default (app) => {
       }
       return reply;
     })
-    .delete('/users/:id', { name: 'deleteUser' }, async (req, reply) => {
+    .delete('/users/:id', async (req, reply) => {
       if (!isAuthorized(req)) {
         req.flash('info', t('flash.authError'));
         reply.redirect(route('root'));

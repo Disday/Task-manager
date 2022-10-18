@@ -4,9 +4,9 @@ import objectionUnique from 'objection-unique';
 // import encrypt from '../lib/secure.cjs';
 import BaseModel from './BaseModel.js';
 
-const unique = objectionUnique({ fields: ['email'] });
+const unique = objectionUnique({ fields: ['name'] });
 
-export default class Status extends unique(BaseModel) {
+export default class status extends unique(BaseModel) {
   get sId() {
     return String(this.id);
   }
