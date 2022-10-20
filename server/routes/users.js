@@ -2,6 +2,7 @@
 
 import getUtils from '../../utilities/index.js';
 
+//TODO isAuth duplication
 export default (app) => {
   const { route, t, _, getModel, getQueryBuilder, isAuthorized } = getUtils(app);
   app
@@ -20,7 +21,7 @@ export default (app) => {
         reply.redirect(route('root'));
       }
       reply.render('users/edit', { user });
-      // return reply;
+      // return reply;`
     })
     .post('/users', async (req, reply) => {
       const user = new (getModel('user'));
@@ -63,7 +64,7 @@ export default (app) => {
     })
     .delete('/users/:id', async (req, reply) => {
       if (!isAuthorized(req)) {
-        req.flash('info', t('flash.authError'));
+        req.flash('error', t('flash.authError'));
         reply.redirect(route('root'));
         return;
       }

@@ -1,0 +1,26 @@
+extends ../layouts/application.pug
+
+block header
+  = t('layouts.application.taskStatuses')
+
+block content
+  a.btn.btn-success.me-1.mb-4(href=route('newTaskStatus'))= t('views.actions.create') 
+
+  table.table.table-striped
+    thead
+    tr
+        th= t('views.taskStatuses.id')
+        th= t('views.taskStatuses.name')
+        th= t('views.taskStatuses.createdAt')
+        th= t('views.taskStatuses.actions')
+    tbody
+      each status in statuses
+        tr
+          td= status.id
+          td= status.name
+          td= formatDate(status.createdAt)
+          td
+            div.d-flex.flex-wrap
+              a.btn.btn-success.me-1(href=route('editTaskStatus', {id: status.sId}))= t('views.actions.edit') 
+              +buttonTo(route('taskStatus', {id: status.sId}),
+              'delete')(value=t('views.actions.delete') class="btn btn-danger me-1")

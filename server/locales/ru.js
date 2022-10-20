@@ -27,7 +27,7 @@ export default {
           success: 'Пользователь успешно удалён',
         },
       },
-      statuses: {
+      taskStatuses: {
         create: {
           error: 'Не удалось создать статус',
           success: 'Статус создан',
@@ -35,6 +35,7 @@ export default {
         update: {
           error: 'Не удалось сохранить данные',
           success: 'Статус успешно сохранён',
+          // nonexist: 'Статус успешно сохранён',
         },
         delete: {
           error: 'Не удалось удалить статус',
@@ -46,10 +47,12 @@ export default {
     layouts: {
       application: {
         users: 'Пользователи',
-        statuses: 'Статусы',
+        tasks: 'Задачи',
+        taskStatuses: 'Статусы',
         signIn: 'Вход',
         signUp: 'Регистрация',
         signOut: 'Выход',
+        404: '404 Страницы не существует'
       },
     },
     views: {
@@ -58,6 +61,8 @@ export default {
           signIn: 'Вход',
           submit: 'Войти',
         },
+        // password: 'Пароль',
+        // email: 'Email',
       },
       users: {
         id: 'ID',
@@ -73,7 +78,7 @@ export default {
           signUp: 'Регистрация',
         },
       },
-      statuses: {
+      taskStatuses: {
         id: 'ID',
         name: 'Название',
         createdAt: 'Дата создания',
@@ -82,6 +87,7 @@ export default {
           save: 'Сохранить',
         },
         edit: 'Редактировать статус',
+        actions: 'Действия',
       },
       welcome: {
         index: {

@@ -4,15 +4,16 @@ import objectionUnique from 'objection-unique';
 // import encrypt from '../lib/secure.cjs';
 import BaseModel from './BaseModel.js';
 
+//Example of pattern Decorator
 const unique = objectionUnique({ fields: ['name'] });
 
-export default class status extends unique(BaseModel) {
-  get sId() {
-    return String(this.id);
+export default class TaskStatus extends unique(BaseModel) {
+  static get viewName() {
+    return 'taskStatuses';
   }
 
   static get tableName() {
-    return 'statuses';
+    return 'task_statuses';
   }
 
   static get jsonSchema() {

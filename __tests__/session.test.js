@@ -2,11 +2,12 @@
 
 import fastify from 'fastify';
 import init from '../server/plugin.js';
-import { getTestData, prepareData } from './helpers/index.js';
+import getUtils from './helpers/index.js';
 
 describe('test session', () => {
   let app;
   let knex;
+  const { getTestData } = getUtils();
   const testData = getTestData();
 
   beforeAll(async () => {
@@ -18,8 +19,9 @@ describe('test session', () => {
   });
 
   beforeEach(async () => {
+    const { prepareData } = getUtils(app);
     await knex.migrate.latest();
-    await prepareData(app);
+    await prepareData();
   });
 
   test('sign in / sign out', async () => {

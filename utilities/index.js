@@ -3,7 +3,7 @@
 import i18next from 'i18next';
 import _ from 'lodash';
 
-export default function (app) {
+export default (app) => {
   const utils = {
     _,
     route: (name, params) => app.reverse(name, params),
@@ -17,8 +17,9 @@ export default function (app) {
       if (!req.isAuthenticated()) {
         req.flash('error', utils.t('flash.authError'))
         reply.redirect(app.reverse('root'));
-        return;
+        return true;
       }
+      return false;
     },
 
     getAlertClass: (type) => {

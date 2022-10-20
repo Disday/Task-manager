@@ -4,11 +4,12 @@ import objectionUnique from 'objection-unique';
 import encrypt from '../lib/secure.cjs';
 import BaseModel from './BaseModel.js';
 
+//Example of pattern Decorator
 const unique = objectionUnique({ fields: ['email'] });
 
 export default class User extends unique(BaseModel) {
-  get sId() {
-    return String(this.id);
+  static get viewName() {
+    return this.tableName;
   }
 
   static get tableName() {

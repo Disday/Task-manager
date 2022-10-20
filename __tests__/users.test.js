@@ -4,12 +4,12 @@ import fastify from 'fastify';
 import omit from 'lodash/omit.js';
 import init from '../server/plugin.js';
 import encrypt from '../server/lib/secure.cjs';
-import { getTestData, prepareData, signIn } from './helpers/index.js';
-// import getUtils from '../utilities/index.js';
+import getUtils from './helpers/index.js';
+
+//TODO Refactor
 
 describe('test users CRUD', () => {
-  let app, knex, route, findUserByEmail;
-  const testData = getTestData();
+  let app, knex, route, findUserByEmail, prepareData, getTestData, testData, signIn;
 
   beforeAll(async () => {
     app = fastify({
@@ -17,13 +17,15 @@ describe('test users CRUD', () => {
     });
     await init(app);
     findUserByEmail = (email) => app.objection.models.user.query().findOne({ email });
+    ({ prepareData, getTestData, signIn } = getUtils(app));
+    testData = getTestData();
     route = app.reverse;
     knex = app.objection.knex;
   });
 
   beforeEach(async () => {
     await knex.migrate.latest();
-    await prepareData(app);
+    await prepareData();
   });
 
   test('index', async () => {
@@ -63,7 +65,7 @@ describe('test users CRUD', () => {
 
   test('edit', async () => {
     const userParams = testData.users.existing;
-    const cookie = await signIn(app, userParams);
+    const cookie = await signIn(userParams);
     const { id } = await findUserByEmail(userParams.email);
     const authorized = await app.inject({
       method: 'GET',
@@ -88,7 +90,7 @@ describe('test users CRUD', () => {
     });
     expect(nonAuthorized.statusCode).toBe(302);
 
-    const cookie = await signIn(app, userParams);
+    const cookie = await signIn( userParams);
     const data = { ...testData.users.existing, firstName: 'Vasya' };
     const authorized = await app.inject({
       method: 'PATCH',
@@ -115,7 +117,7 @@ describe('test users CRUD', () => {
     const user = await findUserByEmail(userParams.email);
     expect(user).toBeDefined();
 
-    const cookie = await signIn(app, userParams);
+    const cookie = await signIn(userParams);
     const authorized = await app.inject({
       method: 'DELETE',
       url: route('user', { id }),

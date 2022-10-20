@@ -10,33 +10,36 @@ const getFixturePath = (filename) => path.join('..', '..', '__fixtures__', filen
 const readFixture = (filename) => fs.readFileSync(new URL(getFixturePath(filename), import.meta.url), 'utf-8').trim();
 const getFixtureData = (filename) => JSON.parse(readFixture(filename));
 
-export const getTestData = () => getFixtureData('testData.json');
+export default (app) => ({
+  getTestData: () => getFixtureData('testData.json'),
+  prepareData: async () => await fixtures.loadFile('__fixtures__/users.json', app.objection.knex),
 
-export const prepareData = async (app) => {
-  const { knex } = app.objection;
-  // получаем данные из фикстур и заполняем БД
-  // await knex('users').insert(getFixtureData('users.json'));
-  // console.log(process.cwd());
-  await fixtures.loadFile('__fixtures__/users.json', knex);
-};
+  createStatus: async (data, cookie) => {
+    return await app.inject({
+      method: 'POST',
+      url: app.reverse('taskStatuses'),
+      payload: { data },
+      cookies: cookie
+    });
+  },
 
+  signIn: async (userParams) => {
+    const responseSignIn = await app.inject({
+      method: 'POST',
+      url: app.reverse('session'),
+      payload: {
+        data: userParams,
+      },
+    });
+    const [sessionCookie] = responseSignIn.cookies;
+    const { name, value } = sessionCookie;
+    const cookie = { [name]: value };
+    return cookie;
+  },
+});
 // await fixtures.loadFiles("fixtures/*.json", connection)
-
 // await fixtures.loadFiles([
 //   "fixtures/file1.json",
 //   "fixtures/file2.json",
 // ], connection);
 
-export const signIn = async (app, userParams) => {
-  const responseSignIn = await app.inject({
-    method: 'POST',
-    url: app.reverse('session'),
-    payload: {
-      data: userParams,
-    },
-  });
-  const [sessionCookie] = responseSignIn.cookies;
-  const { name, value } = sessionCookie;
-  const cookie = { [name]: value };
-  return cookie;
-};
