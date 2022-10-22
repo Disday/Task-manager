@@ -20,7 +20,7 @@ import ru from './locales/ru.js';
 // @ts-ignore
 
 import addRoutes from './routes/index.js';
-import getUtils from '../utilities/index.js';
+import getUtils from '../utils/utils.js';
 import * as knexConfig from '../knexfile.js';
 import models from './models/index.js';
 import FormStrategy from './lib/passportStrategies/FormStrategy.js';

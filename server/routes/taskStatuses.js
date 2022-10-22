@@ -1,4 +1,4 @@
-import getUtils from '../../utilities/index.js';
+import getUtils from '../../utils/utils.js';
 
 export default (app) => {
   const { redirectGuest, route, t, _, getModel, getQueryBuilder } = getUtils(app);
@@ -6,7 +6,7 @@ export default (app) => {
   app
     .get('/statuses', { name: 'taskStatuses' }, async (req, reply) => {
       redirectGuest(req, reply);
-      const statuses = await getModel('taskStatus').query();
+      const statuses = await getQueryBuilder('taskStatus');
       reply.render('taskStatuses/index', { statuses });
     })
     .get('/statuses/new', { name: 'newTaskStatus' }, async (req, reply) => {

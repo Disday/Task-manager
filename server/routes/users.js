@@ -1,6 +1,6 @@
 // @ts-check
 
-import getUtils from '../../utilities/index.js';
+import getUtils from '../../utils/utils.js';
 
 //TODO isAuth duplication
 export default (app) => {

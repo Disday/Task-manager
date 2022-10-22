@@ -1,9 +1,14 @@
 extends ../layouts/application.pug
 
 block header
-  = t('views.taskStatuses.new.create')
+  = t('views.tasks.new.create')
 
 block content
-  +formFor()(action=route('taskStatuses') method='post')
-    +input(status, 'name', errors)(type="text")
-    +submit(status)(value=t('views.taskStatuses.new.save'))
+  - statusesData = { options: statuses, textField: 'name'}
+  - usersData = { options: users, textField: 'lastName'}
+  +formFor()(action=route('tasks') method='post')
+    +input(task, 'name', errors)(type="text")
+    +input(task, 'description', errors)(type="text")
+    +select(task, statusesData, 'status', errors)(type="text")
+    +select(task, usersData, 'executor', errors)(type="text")
+    +submit(task)(value=t('views.tasks.new.save'))

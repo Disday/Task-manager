@@ -1,0 +1,26 @@
+[
+  {
+    "table": "tasks",
+    "data": {
+      "name": "Task1",
+      "creatorId": 1,
+      "statusId": 1
+    }
+  },
+  {
+    "table": "tasks",
+    "data": {
+      "name": "Task2",
+      "creatorId": 1,
+      "statusId": 1
+    }
+  },
+  {
+    "table": "tasks",
+    "data": {
+      "name": "Task3",
+      "creatorId": 1,
+      "statusId": 1
+    }
+  }
+]

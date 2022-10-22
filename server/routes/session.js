@@ -1,6 +1,6 @@
 // @ts-nocheck
 
-import getUtils from '../../utilities/index.js';
+import getUtils from '../../utils/utils.js';
 
 export default (app) => {
   const { route, t } = getUtils(app);

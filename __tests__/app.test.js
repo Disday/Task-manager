@@ -1,18 +1,11 @@
-// @ts-check
-
 import fastify from 'fastify';
 import init from '../server/plugin.js';
 
+const app = await init(fastify({
+  // logger: { prettyPrint: false }
+}));
+
 describe('requests', () => {
-  let app;
-
-  beforeAll(async () => {
-    app = fastify({
-      // logger: { prettyPrint: false }
-    });
-    await init(app);
-  });
-
   test('GET 200', async () => {
     const res = await app.inject({
       method: 'GET',

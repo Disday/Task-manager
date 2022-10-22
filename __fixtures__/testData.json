@@ -12,5 +12,17 @@
       "firstName": "Lawrence",
       "lastName": "Kulas"
     }
+  },
+  "taskStatuses": {
+    "existing": {
+      "name": "Status1"
+    }
+  },
+  "tasks": {
+    "existing": {
+      "name": "Task1",
+      "creatorId": 1,
+      "statusId": 1
+    }
   }
 }

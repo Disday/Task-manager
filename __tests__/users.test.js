@@ -1,46 +1,36 @@
-// @ts-check
-
 import fastify from 'fastify';
 import omit from 'lodash/omit.js';
 import init from '../server/plugin.js';
 import encrypt from '../server/lib/secure.cjs';
-import getUtils from './helpers/index.js';
+import getUtils from '../utils/utils.js';
 
-//TODO Refactor
+const app = await init(fastify({
+  // logger: { prettyPrint: false }
+}));
 
 describe('test users CRUD', () => {
-  let app, knex, route, findUserByEmail, prepareData, getTestData, testData, signIn;
+  const { route, signIn, testData, prepareData, injectGet, getQueryBuilder } = getUtils(app);
+  const { knex } = app.objection;
+  const findUserByEmail = (email) => getQueryBuilder('user').findOne({ email });
+  const existingUser = testData.users.existing;
+  let cookie;
 
   beforeAll(async () => {
-    app = fastify({
-      // logger: { prettyPrint: false }
-    });
-    await init(app);
-    findUserByEmail = (email) => app.objection.models.user.query().findOne({ email });
-    ({ prepareData, getTestData, signIn } = getUtils(app));
-    testData = getTestData();
-    route = app.reverse;
-    knex = app.objection.knex;
   });
 
   beforeEach(async () => {
     await knex.migrate.latest();
-    await prepareData();
+    await prepareData(knex);
+    cookie = await signIn(existingUser);
   });
 
   test('index', async () => {
-    const response = await app.inject({
-      method: 'GET',
-      url: route('users'),
-    });
+    const response = await injectGet('users');
     expect(response.statusCode).toBe(200);
   });
 
   test('new', async () => {
-    const response = await app.inject({
-      method: 'GET',
-      url: route('newUser'),
-    });
+    const response = await injectGet('newUser');
     expect(response.statusCode).toBe(200);
   });
 
@@ -64,9 +54,7 @@ describe('test users CRUD', () => {
   });
 
   test('edit', async () => {
-    const userParams = testData.users.existing;
-    const cookie = await signIn(userParams);
-    const { id } = await findUserByEmail(userParams.email);
+    const { id } = await findUserByEmail(existingUser.email);
     const authorized = await app.inject({
       method: 'GET',
       url: route('editUser', { id }),
@@ -82,16 +70,14 @@ describe('test users CRUD', () => {
   });
 
   test('patch', async () => {
-    const userParams = testData.users.existing;
-    const { id } = await findUserByEmail(userParams.email);
+    const { id } = await findUserByEmail(existingUser.email);
     const nonAuthorized = await app.inject({
       method: 'PATCH',
       url: route('user', { id }),
     });
     expect(nonAuthorized.statusCode).toBe(302);
 
-    const cookie = await signIn( userParams);
-    const data = { ...testData.users.existing, firstName: 'Vasya' };
+    const data = { ...existingUser, firstName: 'Vasya' };
     const authorized = await app.inject({
       method: 'PATCH',
       url: route('user', { id }),
@@ -102,22 +88,20 @@ describe('test users CRUD', () => {
     });
     expect(authorized.statusCode).toBe(200);
 
-    const { firstName } = await findUserByEmail(userParams.email);
+    const { firstName } = await findUserByEmail(existingUser.email);
     expect(firstName).toEqual(data.firstName);
   });
 
   test('delete', async () => {
-    const userParams = testData.users.existing;
-    const { id } = await findUserByEmail(userParams.email);
+    const { id } = await findUserByEmail(existingUser.email);
     const nonAuthorized = await app.inject({
       method: 'DELETE',
       url: route('user', { id }),
     });
     expect(nonAuthorized.statusCode).toBe(302);
-    const user = await findUserByEmail(userParams.email);
+    const user = await findUserByEmail(existingUser.email);
     expect(user).toBeDefined();
 
-    const cookie = await signIn(userParams);
     const authorized = await app.inject({
       method: 'DELETE',
       url: route('user', { id }),
@@ -125,12 +109,12 @@ describe('test users CRUD', () => {
     });
     expect(authorized.statusCode).toBe(302);
 
-    const deletedUser = await findUserByEmail(userParams.email);
+    const deletedUser = await findUserByEmail(existingUser.email);
     expect(deletedUser).toBeUndefined();
   });
 
   afterEach(async () => {
-    await knex('users').truncate();
+    await app.objection.knex('users').truncate();
   });
 
   afterAll(async () => {

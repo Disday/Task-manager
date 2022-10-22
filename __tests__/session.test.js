@@ -1,40 +1,36 @@
-// @ts-check
-
 import fastify from 'fastify';
 import init from '../server/plugin.js';
-import getUtils from './helpers/index.js';
+import getUtils from '../utils/utils.js';
+import getAppUtils from '../utils/utils.js';
+
+const app = await init(fastify({
+  // logger: { prettyPrint: false }
+}));
 
 describe('test session', () => {
-  let app;
-  let knex;
-  const { getTestData } = getUtils();
-  const testData = getTestData();
+  // jest.setTimeout(30000)
+  const { route, testData, prepareData } = getUtils(app);
+  const { knex } = app.objection;
 
   beforeAll(async () => {
-    app = fastify({
-      // logger: { prettyPrint: false }
-    });
-    await init(app);
-    knex = app.objection.knex;
   });
 
   beforeEach(async () => {
-    const { prepareData } = getUtils(app);
     await knex.migrate.latest();
-    await prepareData();
+    await prepareData(knex);
   });
 
   test('sign in / sign out', async () => {
     const response = await app.inject({
       method: 'GET',
-      url: app.reverse('newSession'),
+      url: route('newSession'),
     });
 
     expect(response.statusCode).toBe(200);
 
     const responseSignIn = await app.inject({
       method: 'POST',
-      url: app.reverse('session'),
+      url: route('session'),
       payload: {
         data: testData.users.existing,
       },
@@ -47,7 +43,7 @@ describe('test session', () => {
 
     const responseSignOut = await app.inject({
       method: 'DELETE',
-      url: app.reverse('session'),
+      url: route('session'),
       cookies: cookie,
     });
 
@@ -57,7 +53,7 @@ describe('test session', () => {
   test('sign in - unexistent user', async () => {
     const responseSignIn = await app.inject({
       method: 'POST',
-      url: app.reverse('session'),
+      url: route('session'),
       payload: {
         data: testData.users.new,
       },

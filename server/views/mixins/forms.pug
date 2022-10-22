@@ -1,5 +1,5 @@
-- const getInputName = (property) => `data[${property}]`
-- const getInputId = (property) => `data_${property}`
+- const getTagName = (property) => `data[${property}]`
+- const getTagId = (property) => `data_${property}`
 //- - const getTableName = ({constructor}) => constructor.name 
 
 mixin formFor(entity = null)
@@ -10,20 +10,40 @@ mixin formFor(entity = null)
 mixin input(entity, propertyName, errors = {})
   - propertyErrors = _.get(errors, propertyName)
   - classLine = 'form-control' + (_.isEmpty(propertyErrors) ? '' : ' is-invalid')
-  - inputId = getInputId(propertyName)
-  - tableName = entity.constructor.viewName
+  - inputId = getTagId(propertyName)
+  - const {viewName} = entity.constructor
   .mb-3(class=(errors[propertyName] && 'has-danger'))
     label(
       for= inputId
-    )= t(`views.${tableName}.${propertyName}`)
+    )= t(`views.${viewName}.${propertyName}`)
     input(
       id= inputId
-      name=getInputName(propertyName)
+      name=getTagName(propertyName)
       class=classLine
       value=_.get(entity, propertyName, '')
     )&attributes(attributes)
     if !_.isEmpty(propertyErrors)
       .invalid-feedback= propertyErrors.map(({ message }) => message).join('. ')
+
+mixin select(entity, {options, textField}, propertyName, errors = {})
+  - propertyErrors = _.get(errors, propertyName)
+  - classLine = 'form-control' + (_.isEmpty(propertyErrors) ? '' : ' is-invalid')
+  - selectId = getTagId(propertyName)
+  - const {viewName} = entity.constructor
+  .mb-3(class=(errors[propertyName] && 'has-danger'))
+    label(
+      for= selectId
+    )= t(`views.${viewName}.${propertyName}`)
+    select(
+      id= selectId
+      name=getTagName(propertyName)
+      class=classLine
+      )
+      option() 
+      each elem in options
+        option(value=elem.id)= elem[textField] 
+
+
 
 mixin submit(form = null)
   input(class='btn btn-success' type='submit')&attributes(attributes)

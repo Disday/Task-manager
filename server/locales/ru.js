@@ -78,6 +78,20 @@ export default {
           signUp: 'Регистрация',
         },
       },
+      tasks: {
+        id: 'ID',
+        name: 'Название',
+        status: 'Статус',
+        description: 'Описание',
+        creator: 'Автор',
+        executor: 'Исполнитель',
+        createdAt: 'Дата создания',
+        actions: 'Действия',
+        new: {
+          create: 'Создание задачи',
+          save: 'Сохранить',
+        },
+      },
       taskStatuses: {
         id: 'ID',
         name: 'Название',
