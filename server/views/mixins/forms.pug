@@ -38,12 +38,12 @@ mixin select(entity, {options, textField}, propertyName, errors = {})
       id= selectId
       name=getTagName(propertyName)
       class=classLine
-      )
+      )&attributes(attributes)
       option() 
       each elem in options
-        option(value=elem.id)= elem[textField] 
-
-
+        option(value=elem.id)= elem[textField]
+    if !_.isEmpty(propertyErrors)
+      .invalid-feedback= propertyErrors.map(({ message }) => message).join('. ') 
 
 mixin submit(form = null)
   input(class='btn btn-success' type='submit')&attributes(attributes)

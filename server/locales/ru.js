@@ -27,6 +27,20 @@ export default {
           success: 'Пользователь успешно удалён',
         },
       },
+      tasks: {
+        create: {
+          error: 'Не удалось создать задачу',
+          success: 'Задача создана',
+        },
+        update: {
+          error: 'Не удалось сохранить данные',
+          success: 'Задача успешно сохранёна',
+        },
+        delete: {
+          error: 'Не удалось удалить задачу',
+          success: 'Задача успешно удалёна',
+        },
+      },
       taskStatuses: {
         create: {
           error: 'Не удалось создать статус',
@@ -81,16 +95,17 @@ export default {
       tasks: {
         id: 'ID',
         name: 'Название',
-        status: 'Статус',
+        statusId: 'Статус',
         description: 'Описание',
-        creator: 'Автор',
-        executor: 'Исполнитель',
+        creatorId: 'Автор',
+        executorId: 'Исполнитель',
         createdAt: 'Дата создания',
         actions: 'Действия',
         new: {
           create: 'Создание задачи',
           save: 'Сохранить',
         },
+        edit: 'Редактировать задачу'
       },
       taskStatuses: {
         id: 'ID',
@@ -107,7 +122,7 @@ export default {
         index: {
           hello: 'Менеждер задач',
           description: 'Управляй задачами!',
-          more: 'Ссылка',
+          more: 'Зарегистрируйтесь для полноценной работы',
         },
       },
       actions: {

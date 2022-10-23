@@ -19,9 +19,9 @@ export default class Task extends BaseModel {
       properties: {
         name: { type: 'string', minLength: 1 },
         description: { type: 'string' },
-        statusId: { type: 'integer' },
-        creatorId: { type: 'integer' },
-        executorId: { type: 'integer' },
+        statusId: { type: 'string', minLength: 1  },
+        creatorId: { type: 'string' },
+        executorId: { type: 'string' },
       },
     };
   }

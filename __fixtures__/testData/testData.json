@@ -23,6 +23,11 @@
       "name": "Task1",
       "creatorId": 1,
       "statusId": 1
+    },
+    "new": {
+      "name": "New task",
+      "creatorId": 1,
+      "statusId": 1
     }
   }
 }

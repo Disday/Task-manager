@@ -10,6 +10,7 @@
    "scripts": {
       "prebuild": "rm -rf dist",
       "test": "node --inspect=9321 node_modules/.bin/jest --runInBand ",
+      "testfile": "node --inspect=9321 node_modules/.bin/jest __tests__/tasks.test.js --runInBand ",
       "build": "webpack",
       "start": "fastify start server/plugin.js  -a 0.0.0.0 -l --debug -P"
    },

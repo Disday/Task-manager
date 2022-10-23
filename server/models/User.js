@@ -15,7 +15,7 @@ export default class User extends unique(BaseModel) {
   static get tableName() {
     return 'users';
   }
-
+  
   static get jsonSchema() {
     return {
       type: 'object',

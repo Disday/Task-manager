@@ -64,15 +64,15 @@ describe('test taskStatuses CRUD', () => {
     });
     expect(authCreate.statusCode).toBe(201);
 
+    const status = await findStatusByName(data.name);
+    expect(status).toMatchObject(data);
+
     const nonAuthCreate = await app.inject({
       method: 'POST',
       url: route('taskStatuses'),
       payload: { data },
     });
     expect(nonAuthCreate.statusCode).toBe(302);
-
-    const status = await findStatusByName(data.name);
-    expect(status).toMatchObject(data);
   });
 
   test('patch', async () => {

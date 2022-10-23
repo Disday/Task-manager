@@ -5,22 +5,15 @@ import fs from 'fs';
 import path from 'path';
 import fixtures from 'simple-knex-fixtures';
 
-const fixturePaths = [
-  "__fixtures__/users.json",
-  "__fixtures__/taskStatuses.json",
-];
-
 export default (app) => {
   const utils = {
     route: (...args) => app.reverse(...args),
-    // route: app.reverse,
-    // knex: app.objection.knex,
     getModel: (modelName) => app.objection.models[modelName],
     getQueryBuilder: (modelName) => utils.getModel(modelName).query(),
-    prepareData: async (knex) => await fixtures.loadFiles(fixturePaths, knex),
+    prepareData: async (knex) => await fixtures.loadFiles('__fixtures__/*.json', knex),
     _,
     t: (key) => i18next.t(key),
-    isAuthorized: (req) => req.isAuthenticated() && Number(req.params.id) === req.user.id,
+    isAuthorized: (req, userId) => req.isAuthenticated() && Number(userId) === req.user.id,
     formatDate: (str) => (new Date(str)).toLocaleString(),
 
     injectGet: async (pathParams, cookie) => {
@@ -43,7 +36,7 @@ export default (app) => {
     testData: (() => {
       const getFixturePath = (filename) => path.join('..', '__fixtures__', filename);
       const readFixture = (filename) => fs.readFileSync(new URL(getFixturePath(filename), import.meta.url), 'utf-8').trim();
-      return JSON.parse(readFixture('testData.json'));
+      return JSON.parse(readFixture('testData/testData.json'));
     })(),
 
     getAlertClass: (type) => {
