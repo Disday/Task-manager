@@ -1,0 +1,16 @@
+[
+  {
+    "table": "tasks_labels",
+    "data": {
+      "task_id": "1",
+      "label_id": "1"
+    }
+  },
+  {
+    "table": "tasks_labels",
+    "data": {
+      "task_id": "1",
+      "label_id": "2"
+    }
+  }
+]

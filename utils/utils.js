@@ -9,11 +9,11 @@ export default (app) => {
   const utils = {
     route: (...args) => app.reverse(...args),
     getModel: (modelName) => app.objection.models[modelName],
+
     getQueryBuilder: (modelName) => utils.getModel(modelName).query(),
-    prepareData: async (knex) => await fixtures.loadFiles('__fixtures__/*.json', knex),
+    prepareData: async (knex) => fixtures.loadFiles('__fixtures__/*.json', knex),
     _,
     t: (key) => i18next.t(key),
-    isAuthorized: (req, userId) => req.isAuthenticated() && Number(userId) === req.user.id,
     formatDate: (str) => (new Date(str)).toLocaleString(),
 
     injectGet: async (pathParams, cookie) => {
@@ -21,12 +21,12 @@ export default (app) => {
       const url = _.isArray(pathParams) ? route(...pathParams) : route(pathParams);
       const params = { method: 'GET', url };
       const payload = cookie ? { ...params, cookies: cookie } : params;
-      return await app.inject(payload);
+      return app.inject(payload);
     },
 
     redirectGuest: (req, reply) => {
       if (!req.isAuthenticated()) {
-        req.flash('error', utils.t('flash.authError'))
+        req.flash('error', utils.t('flash.authError'));
         reply.redirect(utils.route('root'));
         return true;
       }
@@ -54,7 +54,7 @@ export default (app) => {
     signIn: async (userParams) => {
       const responseSignIn = await app.inject({
         method: 'POST',
-        url: app.reverse('session'),
+        url: utils.route('session'),
         payload: {
           data: userParams,
         },

@@ -3,8 +3,10 @@
     "table": "tasks",
     "data": {
       "name": "Task1",
-      "creatorId": 1,
-      "statusId": 1
+      "creatorId": 2,
+      "executorId": 2,
+      "statusId": 1,
+      "description": "description1"
     }
   },
   {

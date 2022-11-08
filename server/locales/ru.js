@@ -24,6 +24,7 @@ export default {
         },
         delete: {
           error: 'Не удалось удалить пользователя',
+          relationError: 'Не удалось удалить пользователя, поскольку он связан с задачей ',
           success: 'Пользователь успешно удалён',
         },
       },
@@ -41,7 +42,7 @@ export default {
           success: 'Задача успешно удалёна',
         },
       },
-      taskStatuses: {
+      statuses: {
         create: {
           error: 'Не удалось создать статус',
           success: 'Статус создан',
@@ -49,11 +50,26 @@ export default {
         update: {
           error: 'Не удалось сохранить данные',
           success: 'Статус успешно сохранён',
-          // nonexist: 'Статус успешно сохранён',
         },
         delete: {
           error: 'Не удалось удалить статус',
+          relationError: 'Не удалось удалить статус, поскольку он связан с задачей ',
           success: 'Статус успешно удалён',
+        },
+      },
+      labels: {
+        create: {
+          error: 'Не удалось создать метку',
+          success: 'Метка создана',
+        },
+        update: {
+          error: 'Не удалось сохранить данные',
+          success: 'Метка успешно сохранёна',
+        },
+        delete: {
+          error: 'Не удалось удалить метку',
+          relationError: 'Не удалось удалить метку, поскольку она связана с задачей ',
+          success: 'Метка успешно удалёна',
         },
       },
       authError: 'Доступ запрещён! Пожалуйста, авторизируйтесь.',
@@ -62,11 +78,12 @@ export default {
       application: {
         users: 'Пользователи',
         tasks: 'Задачи',
-        taskStatuses: 'Статусы',
+        statuses: 'Статусы',
+        labels: 'Метки',
         signIn: 'Вход',
         signUp: 'Регистрация',
         signOut: 'Выход',
-        404: '404 Страницы не существует'
+        404: '404 Страницы не существует',
       },
     },
     views: {
@@ -96,8 +113,9 @@ export default {
         id: 'ID',
         name: 'Название',
         statusId: 'Статус',
+        labelsIds: 'Метки',
         description: 'Описание',
-        creatorId: 'Автор',
+        creator: 'Автор',
         executorId: 'Исполнитель',
         createdAt: 'Дата создания',
         actions: 'Действия',
@@ -105,9 +123,9 @@ export default {
           create: 'Создание задачи',
           save: 'Сохранить',
         },
-        edit: 'Редактировать задачу'
+        edit: 'Редактировать задачу',
       },
-      taskStatuses: {
+      statuses: {
         id: 'ID',
         name: 'Название',
         createdAt: 'Дата создания',
@@ -116,6 +134,17 @@ export default {
           save: 'Сохранить',
         },
         edit: 'Редактировать статус',
+        actions: 'Действия',
+      },
+      labels: {
+        id: 'ID',
+        name: 'Название',
+        createdAt: 'Дата создания',
+        new: {
+          create: 'Создание Метки',
+          save: 'Сохранить',
+        },
+        edit: 'Редактировать метку',
         actions: 'Действия',
       },
       welcome: {

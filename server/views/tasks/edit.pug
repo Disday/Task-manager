@@ -4,12 +4,11 @@ block header
   = t('views.tasks.edit')
 
 block content
-  - statusesData = { options: statuses, textField: 'name'}
-  - usersData = { options: users, textField: 'lastName'}
-  +formFor()(action=route('editTask', {id: task.id}) method='post')
+  +formFor()(action=route('task', {id: task.id}) method='post')
     input(name="_method" type="hidden" value="patch")
     +input(task, 'name', errors)(type="text")
     +input(task, 'description', errors)(type="text")
-    +select(task, statusesData, 'statusId', errors)(type="text")
-    +select(task, usersData, 'executorId', errors)(type="text")
+    +select(task, users, 'executorId', errors)(type="text")
+    +select(task, statuses, 'statusId', errors)(type="text")
+    +select(task, labels, 'labelsIds', errors)(type="text" multiple)
     +submit(task)(value=t('views.tasks.new.save'))

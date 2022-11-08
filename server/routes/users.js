@@ -2,29 +2,42 @@
 
 import getUtils from '../../utils/utils.js';
 
-//TODO isAuth duplication
+// TODO isAuth duplication
 export default (app) => {
-  const { route, t, _, getModel, getQueryBuilder, isAuthorized } = getUtils(app);
+  const {
+    route, t, _, getModel, getQueryBuilder,
+  } = getUtils(app);
+
+  const redirectNonAuthorizedUser = (req, reply) => {
+    const isAuthorized = Number(req.params.id) === req.user?.id;
+    if (!isAuthorized) {
+      req.flash('error', t('flash.authError'));
+      reply.redirect(route('root'));
+      return true;
+    }
+    return false;
+  };
+
   app
     .get('/users', { name: 'users' }, async (req, reply) => {
       const users = await getQueryBuilder('user');
       reply.render('users/index', { users });
     })
     .get('/users/new', { name: 'newUser' }, async (req, reply) => {
-      const user = new (getModel('user'));
+      const user = new (getModel('user'))();
       reply.render('users/new', { user });
     })
     .get('/users/:id/edit', { name: 'editUser' }, (req, reply) => {
-      const { user } = req;
-      if (!isAuthorized(req)) {
-        req.flash('error', t('flash.authError'));
-        reply.redirect(route('root'));
+      if (redirectNonAuthorizedUser(req, reply)) {
+        return;
       }
+      const { user } = req;
+      redirectNonAuthorizedUser(req, reply);
       reply.render('users/edit', { user });
       // return reply;`
     })
     .post('/users', async (req, reply) => {
-      const user = new (getModel('user'));
+      const user = new (getModel('user'))();
       const { data } = req.body;
       user.$set(data);
       try {
@@ -40,9 +53,8 @@ export default (app) => {
       return reply;
     })
     .patch('/users/:id', { name: 'user' }, async (req, reply) => {
-      if (!isAuthorized(req)) {
-        req.flash('error', t('flash.authError'));
-        reply.redirect(route('root'));
+      if (redirectNonAuthorizedUser(req, reply)) {
+        return;
       }
       const { data } = req.body;
       const { id } = req.params;
@@ -63,18 +75,30 @@ export default (app) => {
       return reply;
     })
     .delete('/users/:id', async (req, reply) => {
-      if (!isAuthorized(req)) {
-        req.flash('error', t('flash.authError'));
-        reply.redirect(route('root'));
+      if (redirectNonAuthorizedUser(req, reply)) {
         return;
       }
+      const { id } = req.params;
+      const tasksUserInvolved = await getQueryBuilder('task')
+        .where('creatorId', id)
+        .orWhere('executorId', id);
+      const isUserInvolved = !_.isEmpty(tasksUserInvolved);
+
       try {
-        await getModel('user').query().findById(req.params.id).delete();
+        if (isUserInvolved) {
+          req.flash('error', t('flash.users.delete.relationError'));
+          const users = await getQueryBuilder('user');
+          reply.render('users/index', { users });
+          return reply;
+        }
+
+        await getQueryBuilder('user').findById(id).delete();
         req.logOut();
         req.flash('info', t('flash.users.delete.success'));
         reply.redirect(route('root'));
       } catch (e) {
-        req.flash('error', t('flash.users.delete.error'));
+        const text = e.message ?? 'flash.users.delete.error';
+        req.flash('error', t(text));
         reply.redirect(route('users'));
       }
     });

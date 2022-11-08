@@ -11,23 +11,40 @@
       "password": "O6AvLIQL1cbzrre",
       "firstName": "Lawrence",
       "lastName": "Kulas"
+    },
+    "nonCreator": {
+      "email": "nona_murray@yahoo.com",
+      "firstName": "Nona",
+      "lastName": "Murray",
+      "password": "l3Dk2wgBgpxINSU"
     }
   },
-  "taskStatuses": {
+  "statuses": {
     "existing": {
       "name": "Status1"
+    }
+  },
+  "labels": {
+    "existing": {
+      "name": "Label1"
     }
   },
   "tasks": {
     "existing": {
       "name": "Task1",
-      "creatorId": 1,
-      "statusId": 1
+      "creatorId": "2",
+      "executorId": "2",
+      "statusId": "1",
+      "description": "description1"
     },
     "new": {
       "name": "New task",
-      "creatorId": 1,
-      "statusId": 1
+      "executorId": "1",
+      "statusId": "1",
+      "labelsIds": [
+        1,
+        2
+      ]
     }
   }
 }

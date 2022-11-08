@@ -1,11 +1,13 @@
 // @ts-check
 
-import User from './User.js';
-import TaskStatus from './TaskStatus.js';
-import Task from './Task.js';
+import User from './User.cjs';
+import Status from './Status.cjs';
+import Label from './Label.cjs';
+import Task from './Task.cjs';
 
 export default [
   User,
-  TaskStatus,
+  Status,
   Task,
+  Label,
 ];

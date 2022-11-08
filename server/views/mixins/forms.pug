@@ -3,7 +3,7 @@
 //- - const getTableName = ({constructor}) => constructor.name 
 
 mixin formFor(entity = null)
-  div.col-12.col-lg-4.mx-auto  
+  div.col-12.col-lg-4.mx-auto
     form&attributes(attributes)
       block
 
@@ -25,7 +25,7 @@ mixin input(entity, propertyName, errors = {})
     if !_.isEmpty(propertyErrors)
       .invalid-feedback= propertyErrors.map(({ message }) => message).join('. ')
 
-mixin select(entity, {options, textField}, propertyName, errors = {})
+mixin select(entity, options, propertyName, errors = {})
   - propertyErrors = _.get(errors, propertyName)
   - classLine = 'form-control' + (_.isEmpty(propertyErrors) ? '' : ' is-invalid')
   - selectId = getTagId(propertyName)
@@ -40,8 +40,11 @@ mixin select(entity, {options, textField}, propertyName, errors = {})
       class=classLine
       )&attributes(attributes)
       option() 
-      each elem in options
-        option(value=elem.id)= elem[textField]
+      each option in options
+        - const prop = entity[propertyName]
+        - const idArray = _.isArray(prop) ? prop : [String(prop)]
+        - const selectedState = idArray.includes(String(option.id)) 
+        option(value=option.id selected= selectedState)= option
     if !_.isEmpty(propertyErrors)
       .invalid-feedback= propertyErrors.map(({ message }) => message).join('. ') 
 

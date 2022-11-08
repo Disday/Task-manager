@@ -20,9 +20,12 @@ html(lang="en")
           a.nav-link.text-white(href=route('tasks'))
             i.bi.bi-kanban.d-block.mx-auto.mb-1(style="width:max-content; scale:1.5")
             div(style="font-size:90%; width:max-content")=t('layouts.application.tasks')
-          a.nav-link.text-white(href=route('taskStatuses'))
+          a.nav-link.text-white(href=route('statuses'))
             i.bi.bi-list-check.d-block.mx-auto.mb-1(style="width:max-content; scale:1.5")
-            div(style="font-size:90%; width:max-content")=t('layouts.application.taskStatuses')
+            div(style="font-size:90%; width:max-content")=t('layouts.application.statuses')
+          a.nav-link.text-white(href=route('labels'))
+            i.bi.bi-tags.d-block.mx-auto.mb-1(style="width:max-content; scale:1.5")
+            div(style="font-size:90%; width:max-content")=t('layouts.application.labels')
         
         ul.navbar-nav
           if isAuthenticated()
@@ -46,4 +49,4 @@ html(lang="en")
     footer
       .container.my-5.pt-4.border-top
         = 'Developed by '
-        a(target="https://github.com/Disday" href="")= 'Dmitrii Temin'
+        a(target="_blank" href="https://github.com/disday")= 'Dmitrii Temin'

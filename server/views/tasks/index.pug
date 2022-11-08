@@ -6,29 +6,32 @@ block header
 block content
   a.btn.btn-success.me-1.mb-4(href=route('newTask'))= t('views.actions.create') 
 
-  table.table.table-striped
+  table.table.table-striped.sh
     thead
     tr
         th= t('views.tasks.id')
         th= t('views.tasks.name')
         th= t('views.tasks.statusId')
-        th= t('views.tasks.creatorId')
+        th= t('views.tasks.creator')
         th= t('views.tasks.executorId')
         th= t('views.tasks.createdAt')
         th= t('views.tasks.actions')
     tbody
       each task in tasks
-        -const id = task.sId
+        -const id = task.id
+        -const status = statuses.find(({ id }) => id == task.statusId) ?? '';
+        -const creator = users.find(({ id }) => id == task.creatorId);
+        -const executor = users.find(({ id }) => id == task.executorId);
         tr
           td= id
           td 
             a(href=route('task', {id}))= task.name
-          td= task.description
-          td= task.creator
-          td= task.executor
+          td= status.name
+          td= creator
+          td= executor
           td= formatDate(task.createdAt)
           td
             div.d-flex.flex-wrap
+        
               a.btn.btn-success.me-1(href=route('editTask', {id}))= t('views.actions.edit') 
-              +buttonTo(route('task', {id}),
-              'delete')(value=t('views.actions.delete') class="btn btn-danger me-1")
+              +buttonTo(route('task', {id}), 'delete')(value=t('views.actions.delete') class="btn btn-danger me-1")

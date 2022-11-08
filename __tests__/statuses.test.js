@@ -7,17 +7,15 @@ const app = await init(fastify({
   // logger: { prettyPrint: false }
 }));
 
-
-describe('test taskStatuses CRUD', () => {
+describe('test statuses CRUD', () => {
   // jest.setTimeout(30000)
-  const { route, signIn, testData, prepareData, injectGet, getQueryBuilder } = getUtils(app);
+  const {
+    t, route, signIn, testData, prepareData, injectGet, getQueryBuilder,
+  } = getUtils(app);
   const { knex } = app.objection;
-  const findStatusByName = (name) => getQueryBuilder('taskStatus').findOne({ name });
-  const existingStatus = testData.taskStatuses.existing;
+  const findStatusByName = (name) => getQueryBuilder('status').findOne({ name });
+  const existingStatus = testData.statuses.existing;
   let cookie;
-
-  beforeAll(async () => {
-  });
 
   beforeEach(async () => {
     await knex.migrate.latest();
@@ -27,30 +25,30 @@ describe('test taskStatuses CRUD', () => {
   });
 
   test('index', async () => {
-    const authResponse = await injectGet('taskStatuses', cookie);
+    const authResponse = await injectGet('statuses', cookie);
     expect(authResponse.statusCode).toBe(200);
 
-    const nonAuthResponse = await injectGet('taskStatuses');
+    const nonAuthResponse = await injectGet('statuses');
     expect(nonAuthResponse.statusCode).toBe(302);
   });
 
   test('new', async () => {
-    const authResponse = await injectGet('newTaskStatus', cookie);
+    const authResponse = await injectGet('newstatus', cookie);
     expect(authResponse.statusCode).toBe(200);
 
-    const nonAuthResponse = await injectGet('newTaskStatus');
+    const nonAuthResponse = await injectGet('newstatus');
     expect(nonAuthResponse.statusCode).toBe(302);
   });
 
   test('editStatus', async () => {
     const { id } = await findStatusByName(existingStatus.name);
-    const authEdit = await injectGet(['editTaskStatus', { id }], cookie);
+    const authEdit = await injectGet(['editstatus', { id }], cookie);
     expect(authEdit.statusCode).toBe(200);
 
-    const nonAuthEdit = await injectGet(['editTaskStatus', { id }]);
+    const nonAuthEdit = await injectGet(['editstatus', { id }]);
     expect(nonAuthEdit.statusCode).toBe(302);
 
-    const nonexistStatusEdit = await injectGet(['editTaskStatus', { id: 'nonexistId' }], cookie);
+    const nonexistStatusEdit = await injectGet(['editstatus', { id: 'nonexistId' }], cookie);
     expect(nonexistStatusEdit.statusCode).toBe(404);
   });
 
@@ -58,7 +56,7 @@ describe('test taskStatuses CRUD', () => {
     const data = { name: 'New status' };
     const authCreate = await app.inject({
       method: 'POST',
-      url: route('taskStatuses'),
+      url: route('statuses'),
       payload: { data },
       cookies: cookie,
     });
@@ -69,7 +67,7 @@ describe('test taskStatuses CRUD', () => {
 
     const nonAuthCreate = await app.inject({
       method: 'POST',
-      url: route('taskStatuses'),
+      url: route('statuses'),
       payload: { data },
     });
     expect(nonAuthCreate.statusCode).toBe(302);
@@ -81,14 +79,14 @@ describe('test taskStatuses CRUD', () => {
     const data = { name: 'New name' };
     const nonAuthPatch = await app.inject({
       method: 'PATCH',
-      url: route('taskStatus', { id }),
+      url: route('status', { id }),
       payload: { data },
     });
     expect(nonAuthPatch.statusCode).toBe(302);
 
     const authPatch = await app.inject({
       method: 'PATCH',
-      url: route('taskStatus', { id }),
+      url: route('status', { id }),
       payload: { data },
       cookies: cookie,
     });
@@ -103,13 +101,23 @@ describe('test taskStatuses CRUD', () => {
     const { id } = await findStatusByName(name);
     const nonAuthDelete = await app.inject({
       method: 'DELETE',
-      url: route('taskStatus', { id }),
+      url: route('status', { id }),
     });
     expect(nonAuthDelete.statusCode).toBe(302);
 
+    const usedStatusId = id;
+    const deleteUsedStatus = await app.inject({
+      method: 'DELETE',
+      url: route('status', { id: usedStatusId }),
+      cookies: cookie,
+    });
+    expect(deleteUsedStatus.statusCode).toBe(200);
+    expect(deleteUsedStatus.body).toContain(t('flash.statuses.delete.relationError'));
+
+    await getQueryBuilder('task').delete();
     const authDelete = await app.inject({
       method: 'DELETE',
-      url: route('taskStatus', { id }),
+      url: route('status', { id }),
       cookies: cookie,
     });
     expect(authDelete.statusCode).toBe(302);
@@ -119,7 +127,7 @@ describe('test taskStatuses CRUD', () => {
   });
 
   afterEach(async () => {
-    await app.objection.knex('task_statuses').truncate();
+    await app.objection.knex('statuses').truncate();
   });
 
   afterAll(async () => {

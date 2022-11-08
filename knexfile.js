@@ -32,6 +32,6 @@ export const production = {
   useNullAsDefault: true,
   migrations,
   ssl: {
-    rejectUnauthorized: false
-  }
+    rejectUnauthorized: false,
+  },
 };

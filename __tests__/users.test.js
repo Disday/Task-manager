@@ -9,7 +9,9 @@ const app = await init(fastify({
 }));
 
 describe('test users CRUD', () => {
-  const { route, signIn, testData, prepareData, injectGet, getQueryBuilder } = getUtils(app);
+  const {
+    t, route, signIn, testData, prepareData, injectGet, getQueryBuilder,
+  } = getUtils(app);
   const { knex } = app.objection;
   const findUserByEmail = (email) => getQueryBuilder('user').findOne({ email });
   const existingUser = testData.users.existing;
@@ -49,7 +51,7 @@ describe('test users CRUD', () => {
       ...(omit(params, 'password')),
       passwordDigest: encrypt(params.password),
     };
-    const user = await findUserByEmail(params.email)
+    const user = await findUserByEmail(params.email);
     expect(user).toMatchObject(expected);
   });
 
@@ -94,20 +96,31 @@ describe('test users CRUD', () => {
 
   test('delete', async () => {
     const { id } = await findUserByEmail(existingUser.email);
-    const nonAuthorized = await app.inject({
+    const nonAuthorizedDelete = await app.inject({
       method: 'DELETE',
       url: route('user', { id }),
     });
-    expect(nonAuthorized.statusCode).toBe(302);
+    expect(nonAuthorizedDelete.statusCode).toBe(302);
     const user = await findUserByEmail(existingUser.email);
     expect(user).toBeDefined();
 
-    const authorized = await app.inject({
+    const involvedUserId = id;
+    const deleteInvolvedUser = await app.inject({
+      method: 'DELETE',
+      url: route('user', { id: involvedUserId }),
+      cookies: cookie,
+    });
+
+    expect(deleteInvolvedUser.statusCode).toBe(200);
+    expect(deleteInvolvedUser.body).toContain(t('flash.users.delete.relationError'));
+
+    await getQueryBuilder('task').delete();
+    const authorizedDeleteUser = await app.inject({
       method: 'DELETE',
       url: route('user', { id }),
       cookies: cookie,
     });
-    expect(authorized.statusCode).toBe(302);
+    expect(authorizedDeleteUser.statusCode).toBe(302);
 
     const deletedUser = await findUserByEmail(existingUser.email);
     expect(deletedUser).toBeUndefined();

@@ -1,7 +1,6 @@
 import fastify from 'fastify';
 import init from '../server/plugin.js';
 import getUtils from '../utils/utils.js';
-import getAppUtils from '../utils/utils.js';
 
 const app = await init(fastify({
   // logger: { prettyPrint: false }

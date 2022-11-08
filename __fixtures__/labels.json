@@ -1,0 +1,14 @@
+[
+  {
+    "table": "labels",
+    "data": {
+      "name": "Label1"
+    }
+  },
+  {
+    "table": "labels",
+    "data": {
+      "name": "Label2"
+    }
+  }
+]

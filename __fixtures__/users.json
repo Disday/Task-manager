@@ -19,7 +19,9 @@
       "table": "users",
       "data": {
         "email": "nona_murray@yahoo.com",
-        "passwordDigest": "760391e7dceb3cf65ee23e97ca3db8c1515d18c3434b003c1fd781053afcf86f"
+        "firstName": "Nona",
+        "lastName": "Murray",
+        "passwordDigest": "7dc3a73e23978574c92aed94e19e1c46a44650d3bb3256f9474ccd713ce2729d"
       }
     }
   ]

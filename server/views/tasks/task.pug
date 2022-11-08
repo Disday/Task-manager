@@ -1,14 +1,30 @@
 extends ../layouts/application.pug
 
 block header
-  = t('views.tasks.edit')
+  =task.name
 
 block content
-  - statusesData = { options: statuses, textField: 'name'}
-  - usersData = { options: users, textField: 'lastName'}
-  +formFor()(action=route('editTask', {task.id}) method='post')
-    +input(task, 'name', errors)(type="text")
-    +input(task, 'description', errors)(type="text")
-    +select(task, statusesData, 'status', errors)(type="text")
-    +select(task, usersData, 'executor', errors)(type="text")
-    +submit(task)(value=t('views.tasks.new.save'))
+  .row.mt-5.p-5.shadow.bg-white
+    .col-12.col-md-8.order-2.order-md-1
+      .lead.fw-normal.mb-4= task.description 
+    .col-12.col-md-4.border-start.px-3.order-1.order-md-2.mb-3.mb-md-0
+      .mb-2
+        span.me-1.badge.bg-danger.text-white= status.name
+        each label in labels
+          span.me-1.badge.bg-danger.text-white= label
+          .name
+        
+      .d-flex.flex-wrap.mb-3
+        span.text-muted.me-2= t('views.tasks.creator')
+        span= creator
+      .d-flex.flex-wrap.mb-3
+        span.text-muted.me-2= t('views.tasks.executor')
+        span= executor
+      .d-flex.flex-wrap.mb-3
+        span.text-muted.me-2= t('views.tasks.createdAt')
+        span= task.createdAt
+
+      .d-flex.flex-wrap
+        -const id = task.sId
+        a.btn.btn-success.me-1(href=route('editTask', {id}))= t('views.actions.edit') 
+        +buttonTo(route('task', {id}), 'delete')(value=t('views.actions.delete') class="btn btn-danger me-1")
