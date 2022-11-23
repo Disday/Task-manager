@@ -20,10 +20,10 @@ module.exports = class Task extends BaseModel {
       properties: {
         name: { type: 'string', minLength: 1 },
         description: { type: 'string' },
-        statusId: { type: 'string', minLength: 1 },
+        statusId: { type: 'integer' },
         labelIds: { type: 'array' },
-        creatorId: { type: 'string' },
-        executorId: { type: 'string' },
+        creatorId: { type: 'integer' },
+        executorId: { type: 'integer' },
       },
     };
   }

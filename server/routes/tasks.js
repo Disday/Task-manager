@@ -49,18 +49,15 @@ export default (app) => {
       if (redirectGuest(req, reply)) {
         return;
       }
-      // const { id } = req.params;
-      const id = Number(req.params.id);
+      const { id } = req.params;
+      // const id = String(req.params.id);
       try {
-        console.log(1);
-        const task = await getQueryBuilder('task').findOne({ id });
-        const [status] = await getModel('task').relatedQuery('status').for(id);
-        const labels = await getModel('task').relatedQuery('labels').for(id);
-        const [creator] = await getModel('task').relatedQuery('creator').for(id);
-        const [executor] = await getModel('task').relatedQuery('executor').for(id);
-        console.log({
-          task, status, labels, creator, executor,
-        });
+        const task = await getQueryBuilder('task').findById(id);
+        // const statuses = await getModel('status').query();
+        const status = await task.$relatedQuery('status').for(id)
+        const labels = await task.$relatedQuery('labels').for(id);
+        const creator = await task.$relatedQuery('creator').for(id);
+        const executor = await task.$relatedQuery('executor').for(id);
         reply.render('tasks/task', {
           task, status, labels, creator, executor,
         });
@@ -101,7 +98,7 @@ export default (app) => {
       const labels = await getQueryBuilder('label');
       const users = await getQueryBuilder('user');
 
-      const creatorId = String(req.user.id);
+      const creatorId = req.user.id;
       const normalizedData = getNormalizedRequestData(req);
       const labelsIds = getNormalizedLabelsIds(req);
       const taskLabels = labelsIds.map((id) => ({ id }));
@@ -122,6 +119,7 @@ export default (app) => {
           task, statuses, labels, users,
         });
       } catch (e) {
+        console.log(e);
         req.flash('error', t('flash.tasks.create.error'));
         reply.render('tasks/new', {
           task, statuses, labels, users, errors: e.data,
@@ -172,7 +170,7 @@ export default (app) => {
       try {
         const { id } = req.params;
         const task = await getQueryBuilder('task').findById(id);
-        const isCurrentUserTaskCreator = String(req.user.id) === task.creatorId;
+        const isCurrentUserTaskCreator = req.user.id === task.creatorId;
         if (!isCurrentUserTaskCreator) {
           req.flash('error', t('flash.authError'));
           reply.redirect(route('root'));

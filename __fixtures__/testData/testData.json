@@ -32,15 +32,15 @@
   "tasks": {
     "existing": {
       "name": "Task1",
-      "creatorId": "2",
-      "executorId": "2",
-      "statusId": "1",
+      "creatorId": 2,
+      "executorId": 2,
+      "statusId": 1,
       "description": "description1"
     },
     "new": {
       "name": "New task",
-      "executorId": "1",
-      "statusId": "1",
+      "executorId": 1,
+      "statusId": 1,
       "labelsIds": [
         1,
         2

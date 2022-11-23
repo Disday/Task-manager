@@ -168,7 +168,7 @@ describe('test tasks CRUD', () => {
     });
     expect(authDelete.statusCode).toBe(302);
 
-    const deletedTask = await getQueryBuilder('task').findOne({ id });
+    const deletedTask = await getQueryBuilder('task').findById(id);
     expect(deletedTask).toBeUndefined();
   });
 
