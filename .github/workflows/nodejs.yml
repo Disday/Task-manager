@@ -8,6 +8,9 @@ on:
     branches:
       - main
 
+env:
+  SESSION_KEY: ${{ secrets.SESSION_KEY }}
+
 jobs:
   build:
 

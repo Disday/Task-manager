@@ -6,13 +6,22 @@ export default (app) => {
   } = getUtils(app);
 
   const getNormalizedLabelsIds = (req) => {
-    const { labelsIds = [] } = req.body.data;
-    return _.isArray(labelsIds) ? labelsIds : [labelsIds];
+    const { labelsIds } = req.body.data;
+    const idsArray = _.isArray(labelsIds) ? labelsIds : [labelsIds];
+    return idsArray.map((id) => Number(id));
   };
 
   const getNormalizedRequestData = (req) => {
     const filtredReq = _.omit(req.body.data, 'labelsIds');
-    return _.mapValues(filtredReq, (value) => (typeof value === 'number' ? String(value) : value));
+    return _.mapValues(filtredReq, (value, key) => {
+      if (value === '') {
+        return null;
+      }
+      if (key.includes('Id')) {
+        return Number(value);
+      }
+      return value;
+    });
   };
 
   app
@@ -54,7 +63,7 @@ export default (app) => {
       try {
         const task = await getQueryBuilder('task').findById(id);
         // const statuses = await getModel('status').query();
-        const status = await task.$relatedQuery('status').for(id)
+        const status = await task.$relatedQuery('status').for(id);
         const labels = await task.$relatedQuery('labels').for(id);
         const creator = await task.$relatedQuery('creator').for(id);
         const executor = await task.$relatedQuery('executor').for(id);
@@ -159,6 +168,7 @@ export default (app) => {
         });
         return reply;
       } catch (e) {
+        console.log(e);
         req.flash('error', t('flash.tasks.update.error'));
         reply.render('tasks/edit', {
           task, labels, statuses, users, errors: e.data,

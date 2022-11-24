@@ -115,7 +115,7 @@ export default {
         statusId: 'Статус',
         labelsIds: 'Метки',
         description: 'Описание',
-        creator: 'Автор',
+        creatorId: 'Автор',
         executorId: 'Исполнитель',
         createdAt: 'Дата создания',
         actions: 'Действия',

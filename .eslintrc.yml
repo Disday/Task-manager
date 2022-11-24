@@ -15,7 +15,7 @@ env:
   jest: true
 
 rules:
-  no-console: 0
+  # no-console: 0
   consistent-return: 0
   import/extensions: 0
   new-cap:
