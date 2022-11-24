@@ -27,6 +27,9 @@ lint:
 test:
 	npm test -s
 
+test-coverage:
+	npm test -- --coverage --coverageProvider=v8
+
 docker:
 	docker build -t task-manager .
 	docker run -it -p 3000:3000 -p 80:80 task-manager

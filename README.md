@@ -38,4 +38,4 @@ Run installation with ```make setup```
 
 ## Run
 Run application with ```make start```  
-Browse http://localhost:5000
+Browse http://localhost:3000
