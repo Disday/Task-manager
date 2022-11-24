@@ -4,7 +4,6 @@ install:
 	npm install
 
 db-migrate:
-	npx knex migrate:rollback --all
 	npx knex migrate:latest
 
 build:
@@ -20,10 +19,14 @@ start-backend:
 	npm start -- --watch --verbose-watch --ignore-watch='node_modules .git .sqlite'
 
 start-frontend:
-	npx webpack --watch --progress
+	npx webpack --watch
 
 lint:
 	npx eslint . --fix
 
 test:
 	npm test -s
+
+docker:
+	docker build -t task-manager .
+	docker run -it task-manager
