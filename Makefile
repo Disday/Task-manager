@@ -29,4 +29,4 @@ test:
 
 docker:
 	docker build -t task-manager .
-	docker run -it task-manager
+	docker run -it -p 3000:3000 -p 80:80 task-manager
